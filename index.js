@@ -2,6 +2,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const cors = require('cors');
 
 //% Accessing express and set up server variables .....................
 const app = express();
@@ -12,7 +13,7 @@ const todoRoutes = require('./routes/todos');
 const signupRoutes = require('./routes/signup');
 const signinRoutes = require('./routes/signin');
 
-// # Check .env file for port variables. If they exist, use those if not, use port 5000.
+// # Check .env file for port variables. If they exist, use those if not, use port 8000.
 const PORT = process.env.PORT || 8000;
 
 // % Middleware functions
@@ -35,6 +36,28 @@ function authenticateToken(req, res, next) {
     next();
   });
 }
+
+// # Use cors to allow for cross page communication
+app.use(cors());
+app.use(function (req, res, next) {
+  //? Website we wish to allow content
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+
+  //? Request methods we will allow
+  res.setHeader('Access-Control-Allow-Methods', 'POST');
+
+  //? RType of content we wish to allow
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'X-Requested-With,content-type'
+  );
+
+  //? Set to true if you need website to include cookies in the request sent to
+  //? api (e.g. in case you use sessions).
+  res.setHeader('Access-Control-Allow-Credentials', true);
+
+  next();
+});
 // # Use express.json so we can unpack req.body (middleware)
 app.use(express.json());
 

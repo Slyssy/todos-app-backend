@@ -2,9 +2,12 @@ const pool = require('../sql/connection');
 
 // # Controller to GET all todos
 const list = (req, res) => {
-  pool.query('SELECT * FROM todos', function (err, rows, fields) {
-    res.json(rows);
-  });
+  pool.query(
+    `SELECT * FROM todos WHERE user_id = ${req.user.id}`,
+    function (err, rows, fields) {
+      res.json(rows);
+    }
+  );
 };
 
 // # Controller to CREATE NEW USER
